@@ -43,7 +43,7 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <?php if(!isset($_SESSION['user'])) { ?>
-                <li><a href="login.html">Log in</a></li>
+                <li><a href="login.php">Log in</a></li>
                 <li><a href="signup.php">Sign up</a></li>
                 <?php } else { ?>
                 <li class="dropdown">
@@ -51,10 +51,10 @@
                     <?php echo $_SESSION['firstName'] . " " . $_SESSION['lastName']; ?>
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                <li><a href="#">Add post</a></li>
+                <li><a href="add-post.php">Add post</a></li>
                 <li><a href="#">Edit profile</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="#">Logout</a></li>
+                <li><a href="logout.php">Logout</a></li>
                 </ul>
                 </li>
                 <?php } ?>

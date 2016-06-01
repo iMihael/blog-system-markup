@@ -64,3 +64,34 @@ function checkUser($email, $password) {
 
     }
 }
+
+function addPost($userId, $title, $body, $filePath = false) {
+    $userDb = fopen("db/$userId.db", "a+");
+    if(!$userDb) {
+        return false;
+    }
+    $name = false;
+    if(
+        $filePath &&
+        is_uploaded_file($filePath)
+    ) {
+        //TODO: check image (getimagesize)
+        $pathInfo = pathinfo($filePath);
+        $name = "img_" .
+            time() . "." .
+            $pathInfo['extension'];
+
+        move_uploaded_file(
+            $filePath, "img/" . $name
+        );
+    }
+
+    fwrite($userDb, json_encode([
+        'title' => $title,
+        'body' => $body,
+        'image' => $name,
+        'createdAt' => date("d.m.Y H:i:s"),
+    ]));
+    fclose($userDb);
+    return true;
+}
