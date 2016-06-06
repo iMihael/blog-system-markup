@@ -1,6 +1,4 @@
 <?php
-    session_start();
-
     require "functions.php";
 
     if(isset($_SESSION['user'])) {
@@ -17,7 +15,7 @@
                 $_POST['password'] == $_POST['passwordConfirm']
             ) {
                 if (!userExist($_POST['email'])) {
-                    if (addUser($_POST['email'],
+                    if ($user = addUser($_POST['email'],
                         $_POST['firstName'],
                         $_POST['lastName'],
                         $_POST['password']
@@ -26,6 +24,7 @@
                         $_SESSION['user'] = true;
                         $_SESSION['firstName'] = $_POST['firstName'];
                         $_SESSION['lastName'] = $_POST['lastName'];
+                        $_SESSION['userId'] = $user['id'];
                         header("Location: index.php");
                     }
                 }

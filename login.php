@@ -1,5 +1,4 @@
 <?php
-    session_start();
     require "functions.php";
 
     if(!empty($_POST)) {
@@ -11,6 +10,7 @@
                 $_SESSION['user'] = true;
                 $_SESSION['firstName'] = $user['firstName'];
                 $_SESSION['lastName'] = $user['lastName'];
+                $_SESSION['userId'] = $user['id'];
                 header("Location: index.php");
             }
         }

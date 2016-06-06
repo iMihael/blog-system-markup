@@ -1,14 +1,30 @@
 <?php
 
+session_start();
+
 function addUser($email, $firstName, $lastName, $password) {
-    //TODO: implement user id
+    //TODO: refactor user db
+    $userId = 1;
+    $usersDb = fopen("db/users.db", "a+");
+
+    if($usersDb) {
+        fseek($usersDb, 0);
+        while(!feof($usersDb)) {
+            $userId++;
+            fgets($usersDb);
+        }
+    }
+
+    fseek($usersDb, 0, SEEK_END);
+
     $line = json_encode([
+        'id' => $userId,
         'email' => $email,
         'firstName' => $firstName,
         'lastName' => $lastName,
         'password' => sha1( $password ),
     ]);
-    $usersDb = fopen("db/users.db", "a+");
+
     if($usersDb) {
         fwrite($usersDb, $line . PHP_EOL);
         fclose($usersDb);
@@ -65,7 +81,25 @@ function checkUser($email, $password) {
     }
 }
 
-function addPost($userId, $title, $body, $filePath = false) {
+function getUserById($id) {
+
+    //TODO: refactor user db
+    $usersDb = fopen("db/users.db", "r");
+    if(!$usersDb) {
+        return false;
+    } else {
+        while(!feof($usersDb)) {
+            if($line = fgets($usersDb)) {
+                $user = json_decode($line, true);
+                if($user['id'] == $id) {
+                    return $user;
+                }
+            }
+        }
+    }
+
+    return false;
+}
     $userDb = fopen("db/$userId.db", "a+");
     if(!$userDb) {
         return false;
