@@ -35,6 +35,7 @@ function addUser($email, $firstName, $lastName, $password) {
 }
 
 function userExist($email) {
+    //TODO: refactor user db
     $usersDb = fopen("db/users.db", "r");
     if(!$usersDb) {
         return false;
@@ -57,6 +58,7 @@ function userExist($email) {
 
 function checkUser($email, $password) {
     $password = sha1($password);
+    //TODO: refactor user db
     $usersDb = fopen("db/users.db", "r");
     if(!$usersDb) {
         return false;
@@ -100,24 +102,31 @@ function getUserById($id) {
 
     return false;
 }
+
+function addPost($userId, $title, $body, $filePath = false, $fileName = false) {
     $userDb = fopen("db/$userId.db", "a+");
+
     if(!$userDb) {
         return false;
     }
+
     $name = false;
+
     if(
         $filePath &&
         is_uploaded_file($filePath)
     ) {
-        //TODO: check image (getimagesize)
-        $pathInfo = pathinfo($filePath);
-        $name = "img_" .
-            time() . "." .
-            $pathInfo['extension'];
+        $imageInfo = getimagesize($filePath);
+        if($imageInfo) {
+            $pathInfo = pathinfo($fileName);
+            $name = "img_" .
+                time() . "." .
+                $pathInfo['extension'];
 
-        move_uploaded_file(
-            $filePath, "img/" . $name
-        );
+            move_uploaded_file(
+                $filePath, "img/" . $name
+            );
+        }
     }
 
     fwrite($userDb, json_encode([
@@ -126,6 +135,7 @@ function getUserById($id) {
         'image' => $name,
         'createdAt' => date("d.m.Y H:i:s"),
     ]));
+
     fclose($userDb);
     return true;
 }

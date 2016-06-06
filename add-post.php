@@ -1,4 +1,21 @@
 <?php
+    require "functions.php";
+    if(!isset($_SESSION['user'])) {
+        header("Location: index.php");
+    }
+
+    if(isset($_POST['title']) && isset($_POST['content'])) {
+        if(addPost(
+            $_SESSION['userId'], $_POST['title'],
+            $_POST['content'],
+            ((isset($_FILES['image']) && $_FILES['image']['error'] == 0) ? $_FILES['image']['tmp_name'] : false),
+            ((isset($_FILES['image']) && $_FILES['image']['error'] == 0) ? $_FILES['image']['name'] : false))
+        ) {
+            header("Location: index.php");
+        }
+    }
+
+
     require "header.php";
 ?>
 
@@ -10,18 +27,18 @@
                 <h2>Add Post</h2>
             </div>
             <div class="panel-body">
-                <form>
+                <form method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label>Title</label>
-                        <input type="text" class="form-control" />
+                        <input name="title" type="text" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label>Content</label>
-                        <textarea class="form-control" rows="5"></textarea>
+                        <textarea name="content" class="form-control" rows="5"></textarea>
                     </div>
                     <div class="form-group">
                         <label>Picture (optional)</label>
-                        <input type="file" class="form-control" />
+                        <input name="image" type="file" class="form-control" />
                     </div>
                     <div class="form-group">
                         <input type="submit" class="btn btn-primary form-control" />
