@@ -17,18 +17,19 @@ function addUser($email, $firstName, $lastName, $password) {
 
     fseek($usersDb, 0, SEEK_END);
 
-    $line = json_encode([
+    $user = [
         'id' => $userId,
         'email' => $email,
         'firstName' => $firstName,
         'lastName' => $lastName,
         'password' => sha1( $password ),
-    ]);
+    ];
+    $line = json_encode($user);
 
     if($usersDb) {
         fwrite($usersDb, $line . PHP_EOL);
         fclose($usersDb);
-        return true;
+        return $user;
     }
 
     return false;
