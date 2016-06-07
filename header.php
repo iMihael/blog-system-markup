@@ -21,7 +21,9 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="index.php">
-                <?php if(isset($_SESSION['user']) && isset($_GET['user-id'])) {
+                <?php
+                //TODO: check blog.php from $_SERVER
+                if(/*isset($_SESSION['user']) &&*/ isset($_GET['user-id'])) {
                     if ($currentUser = getUserById($_GET['user-id'])) {
                         echo $currentUser['firstName'] . " " . $currentUser['lastName'];
 

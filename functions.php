@@ -135,8 +135,24 @@ function addPost($userId, $title, $body, $filePath = false, $fileName = false) {
         'body' => $body,
         'image' => $name,
         'createdAt' => date("d.m.Y H:i:s"),
-    ]));
+    ]) . PHP_EOL);
 
     fclose($userDb);
     return true;
+}
+
+function getPostsByUserId($userId, $page = 1) {
+    $pageCount = 20;
+    $posts = fopen("db/" . $userId . ".db", "r");
+    $results = [];
+    $counter = 0;
+    while(!feof($posts) && $counter < $pageCount) {
+        if($line = fgets($posts)) {
+            $post = json_decode($line, true);
+            $results[] = $post;
+        }
+    }
+
+    fclose($posts);
+    return $results;
 }
