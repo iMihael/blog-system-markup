@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+$usersDb = fopen("db/users.db", "a+");
 
 function addUser($email, $firstName, $lastName, $password) {
     //TODO: refactor user db
@@ -141,9 +142,27 @@ function addPost($userId, $title, $body, $filePath = false, $fileName = false) {
     return true;
 }
 
-function getPostsByUserId($userId, $page = 1) {
-    $pageCount = 20;
+function getPostsCount($userId) {
     $posts = fopen("db/" . $userId . ".db", "r");
+    $counter = 0;
+    while(!feof($posts)) {
+        if(fgets($posts)) {
+            $counter++;
+        }
+    }
+    fclose($posts);
+    return $counter;
+}
+
+function getPostsByUserId($userId, $page = 1) {
+    $pageCount = 2;
+    $shift = ($page - 1) * $pageCount;
+    $posts = fopen("db/" . $userId . ".db", "r");
+
+    for($i=0;$i<$shift;$i++) {
+        fgets($posts);
+    }
+
     $results = [];
     $counter = 0;
     while(!feof($posts) && $counter < $pageCount) {
@@ -151,6 +170,8 @@ function getPostsByUserId($userId, $page = 1) {
             $post = json_decode($line, true);
             $results[] = $post;
         }
+
+        $counter++;
     }
 
     fclose($posts);
