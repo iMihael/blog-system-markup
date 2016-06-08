@@ -40,7 +40,7 @@
             <ul class="nav navbar-nav">
                 <?php if(isset($currentUser)) { ?>
                 <?php //TODO: implement active li ?>
-                <li><a href="blog.php?user-id=<?php echo $currentUser['id'] ?>">Posts <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="blog.php?user-id=<?php echo $currentUser['id'] ?>">Posts <span class="sr-only">(current)</span></a></li>
                 <li><a href="photos.php?user-id=<?php echo $currentUser['id'] ?>">Photos</a></li>
                 <?php } ?>
             </ul>
@@ -69,7 +69,7 @@
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="blog.php?user-id=<?php echo $_SESSION['userId'] ?>">My Blog</a></li>
-                    <li><a href="add-post.php">Add post</a></li>
+                    <li class="active"><a href="add-post.php">Add post</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
