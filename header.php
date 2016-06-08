@@ -44,13 +44,15 @@
                 <li><a href="photos.php?user-id=<?php echo $currentUser['id'] ?>">Photos</a></li>
                 <?php } ?>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
+            <form class="navbar-form navbar-left" role="search" method="GET" action="search.php">
                 <div class="form-group">
-                    <!--<input type="text" class="form-control" placeholder="Search">-->
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
+                        <?php if(isset($currentUser)) {
+                            echo "<input type=\"hidden\" value=\"{$currentUser['id']}\" name=\"user-id\" />";
+                        } ?>
+                        <input name="search" type="text" class="form-control" placeholder="Search for...">
       <span class="input-group-btn">
-        <button class="btn btn-default" type="button">Go!</button>
+        <button class="btn btn-default" type="submit">Go!</button>
       </span>
                     </div><!-- /input-group -->
                 </div>

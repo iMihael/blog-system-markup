@@ -5,11 +5,13 @@
 
 <div class="container">
 
+    <?php if(!isset($_SESSION['user'])): ?>
     <div class="jumbotron">
         <h1>Introduce cool blog system!</h1>
         <p>It's very cool and fun, try it!</p>
         <p><a class="btn btn-primary" href="signup.php">Start using!</a> or <a href="login.php" class="btn btn-primary">Log in</a></p>
     </div>
+    <?php endif; ?>
 
     <h2>List of bloggers</h2>
     <table class="table table-bordered table-striped">
@@ -21,39 +23,24 @@
         </tr>
         </thead>
         <tbody>
+
+        <?php
+            $bloggers = getBloggers();
+
+            foreach($bloggers as $blogger):
+        ?>
         <tr>
             <td>
-                <a href="blog.html">Андрей Петров</a>
+                <a href="blog.php?user-id=<?php echo $blogger['id']; ?>"><?php echo $blogger['name']; ?></a>
             </td>
             <td>
-                2
+                <?php echo $blogger['postCount']; ?>
             </td>
             <td>
-                1
+                <?php echo $blogger['photosCount']; ?>
             </td>
         </tr>
-        <tr>
-            <td>
-                <a href="blog.html">Петр Андреев</a>
-            </td>
-            <td>
-                2
-            </td>
-            <td>
-                1
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a href="blog.html">Михаил Горький</a>
-            </td>
-            <td>
-                2
-            </td>
-            <td>
-                1
-            </td>
-        </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
 
