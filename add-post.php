@@ -11,7 +11,7 @@
             ((isset($_FILES['image']) && $_FILES['image']['error'] == 0) ? $_FILES['image']['tmp_name'] : false),
             ((isset($_FILES['image']) && $_FILES['image']['error'] == 0) ? $_FILES['image']['name'] : false))
         ) {
-            header("Location: index.php");
+            header("Location: blog.php?user-id=" . $_SESSION['userId']);
         }
     }
 

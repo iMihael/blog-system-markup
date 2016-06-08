@@ -106,7 +106,11 @@ function getUserById($id) {
 }
 
 function addPost($userId, $title, $body, $filePath = false, $fileName = false) {
-    $userDb = fopen("db/$userId.db", "a+");
+
+    $path = tempnam('NOT_EXIST', 'tempDb_');
+
+    //$userDb = fopen("db/$userId.db", "a+");
+    $userDb = fopen($path, "a+");
 
     if(!$userDb) {
         return false;
@@ -138,7 +142,19 @@ function addPost($userId, $title, $body, $filePath = false, $fileName = false) {
         'createdAt' => date("d.m.Y H:i:s"),
     ]) . PHP_EOL);
 
+
+    $oldUserDb = fopen("db/$userId.db", "r");
+
+    while(!feof($oldUserDb)) {
+        $line = fgets($oldUserDb);
+        fwrite($userDb, $line);
+    }
+
+    fclose($oldUserDb);
     fclose($userDb);
+
+    rename($path, "db/$userId.db");
+
     return true;
 }
 
