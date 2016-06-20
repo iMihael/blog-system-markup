@@ -2,6 +2,7 @@
 
 session_start();
 $usersDb = fopen("db/users.db", "a+");
+define("PER_PAGE", 2);
 
 function addUser($email, $firstName, $lastName, $password) {
     //TODO: refactor user db
@@ -161,9 +162,8 @@ function addPost($userId, $title, $body, $filePath = false, $fileName = false) {
 }
 
 function searchByUser($userId, $search, $page = 1) {
-    $pageCount = 2;
     $results = [];
-    $shift = ($page - 1) * $pageCount;
+    $shift = ($page - 1) * PER_PAGE;
     if(file_exists("db/" . $userId . ".db")) {
         $posts = fopen("db/" . $userId . ".db", "r");
 
@@ -182,7 +182,7 @@ function searchByUser($userId, $search, $page = 1) {
 
 
         $counter = 0;
-        while (!feof($posts) && $counter < $pageCount) {
+        while (!feof($posts) && $counter < PER_PAGE) {
             if ($line = fgets($posts)) {
                 $post = json_decode($line, true);
                 if(
@@ -289,9 +289,8 @@ function getBloggers() {
 }
 
 function getPostsByUserId($userId, $page = 1) {
-    $pageCount = 2;
     $results = [];
-    $shift = ($page - 1) * $pageCount;
+    $shift = ($page - 1) * PER_PAGE;
     if(file_exists("db/" . $userId . ".db")) {
         $posts = fopen("db/" . $userId . ".db", "r");
 
@@ -301,7 +300,7 @@ function getPostsByUserId($userId, $page = 1) {
 
 
         $counter = 0;
-        while (!feof($posts) && $counter < $pageCount) {
+        while (!feof($posts) && $counter < PER_PAGE) {
             if ($line = fgets($posts)) {
                 $post = json_decode($line, true);
                 $results[] = $post;

@@ -47,25 +47,28 @@
     ?>
 
 
+    <?php
+
+    $count = getPostsCountSearch($_GET['user-id'], $_GET['search']);
+    $pages = ceil($count / PER_PAGE);
+
+    if($pages > 1):
+
+    ?>
+
 
 
 
     <nav>
         <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-<!--            <li><a href="#">1</a></li>-->
-<!--            <li><a href="#">2</a></li>-->
-<!--            <li><a href="#">3</a></li>-->
-<!--            <li><a href="#">4</a></li>-->
-<!--            <li><a href="#">5</a></li>-->
+<!--            <li>-->
+<!--                <a href="#" aria-label="Previous">-->
+<!--                    <span aria-hidden="true">&laquo;</span>-->
+<!--                </a>-->
+<!--            </li>-->
+
             <?php
-                $perPage = 2;
-                $count = getPostsCountSearch($_GET['user-id'], $_GET['search']);
-                $pages = ceil($count / $perPage);
+
 
                 for($i=1;$i<=$pages;$i++) {
                     echo "<li><a href=\"search.php?user-id={$_GET['user-id']}&search={$_GET['search']}&page=$i\">$i</a></li>";
@@ -74,14 +77,20 @@
 
             ?>
 
-            <li>
-                <a href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
+<!--            <li>-->
+<!--                <a href="#" aria-label="Next">-->
+<!--                    <span aria-hidden="true">&raquo;</span>-->
+<!--                </a>-->
+<!--            </li>-->
         </ul>
     </nav>
 
+    <?php endif; ?>
+
 </div>
-</body>
-</html>
+
+<?php
+
+include "footer.php";
+
+?>

@@ -37,20 +37,24 @@
 
         }
 
+    $postCount = getPostsCount($_GET['user-id']);
+    $pageCount = ceil($postCount / PER_PAGE);
+
+    if($pageCount > 1) {
+
     ?>
 
 
     <nav>
         <ul class="pagination">
-            <li>
-                <a href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
+<!--            <li>-->
+<!--                <a href="#" aria-label="Previous">-->
+<!--                    <span aria-hidden="true">&laquo;</span>-->
+<!--                </a>-->
+<!--            </li>-->
 
             <?php
-                $postCount = getPostsCount($_GET['user-id']);
-                $pageCount = ceil($postCount / 2);
+
 
             for($i=0;$i<$pageCount;$i++) {
 
@@ -61,14 +65,21 @@
             ?>"><?php echo $i + 1; ?></a></li>
 
             <?php } ?>
-            <li>
-                <a href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
+<!--            <li>-->
+<!--                <a href="#" aria-label="Next">-->
+<!--                    <span aria-hidden="true">&raquo;</span>-->
+<!--                </a>-->
+<!--            </li>-->
         </ul>
     </nav>
 
+    <?php } ?>
+
 </div>
-</body>
-</html>
+
+
+<?php
+
+include "footer.php";
+
+?>

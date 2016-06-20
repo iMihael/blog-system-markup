@@ -20,19 +20,21 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php">
+
                 <?php
                 //TODO: check blog.php from $_SERVER
                 if(/*isset($_SESSION['user']) &&*/ isset($_GET['user-id'])) {
                     if ($currentUser = getUserById($_GET['user-id'])) {
-                        echo $currentUser['firstName'] . " " . $currentUser['lastName'];
 
+                        echo
+                           '<a class="navbar-brand" href="">' . $currentUser['firstName'] . " " . $currentUser['lastName'] .
+                           '</a>';
                     }
                 } else {
                 ?>
-                    Blog System
+            <a class="navbar-brand" href="index.php">Blog System</a>
                 <?php } ?>
-            </a>
+
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -41,7 +43,7 @@
                 <?php if(isset($currentUser)) { ?>
                 <?php //TODO: implement active li ?>
                 <li class="active"><a href="blog.php?user-id=<?php echo $currentUser['id'] ?>">Posts <span class="sr-only">(current)</span></a></li>
-                <li><a href="photos.php?user-id=<?php echo $currentUser['id'] ?>">Photos</a></li>
+<!--                <li><a href="photos.php?user-id=--><?php //echo $currentUser['id'] ?><!--">Photos</a></li>-->
                 <?php } ?>
             </ul>
             <form class="navbar-form navbar-left" role="search" method="GET" action="search.php">
@@ -69,7 +71,7 @@
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="blog.php?user-id=<?php echo $_SESSION['userId'] ?>">My Blog</a></li>
-                    <li class="active"><a href="add-post.php">Add post</a></li>
+                    <li><a href="add-post.php">Add post</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>
