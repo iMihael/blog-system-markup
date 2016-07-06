@@ -4,6 +4,14 @@ session_start();
 $usersDb = fopen("db/users.db", "a+");
 define("PER_PAGE", 2);
 
+spl_autoload_register(function($className){
+    if(file_exists($className)) {
+        require_once 'classes/' . $className;
+    } else {
+        die('class does not exists!');
+    }
+});
+
 function addUser($email, $firstName, $lastName, $password) {
     //TODO: refactor user db
     $userId = 1;

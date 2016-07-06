@@ -1,50 +1,15 @@
 <?php
-    require "functions.php";
-    require "header.php";
-?>
 
-<div class="container">
+spl_autoload_register(function($className){
+    if(strpos($className, "Controller")) {
+        require_once 'controllers' . DIRECTORY_SEPARATOR . $className . '.php';
+    } else {
+        require_once 'components' . DIRECTORY_SEPARATOR . $className . '.php';
+    }
+});
 
-    <?php if(!isset($_SESSION['user'])): ?>
-    <div class="jumbotron">
-        <h1>Introduce cool blog system!</h1>
-        <p>It's very cool and fun, try it!</p>
-        <p><a class="btn btn-primary" href="signup.php">Start using!</a> or <a href="login.php" class="btn btn-primary">Log in</a></p>
-    </div>
-    <?php endif; ?>
 
-    <h2>List of bloggers</h2>
-    <table class="table table-bordered table-striped">
-        <thead>
-        <tr>
-            <th>Имя</th>
-            <th>Количество записей</th>
-            <th>Количество фото</th>
-        </tr>
-        </thead>
-        <tbody>
+//var_dump($_SERVER);
+//var_dump($_GET);
 
-        <?php
-            $bloggers = getBloggers();
-
-            foreach($bloggers as $blogger):
-        ?>
-        <tr>
-            <td>
-                <a href="blog.php?user-id=<?php echo $blogger['id']; ?>"><?php echo $blogger['name']; ?></a>
-            </td>
-            <td>
-                <?php echo $blogger['postCount']; ?>
-            </td>
-            <td>
-                <?php echo $blogger['photosCount']; ?>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-
-</div>
-<?php
-    require "footer.php";
-?>
+Router::getInstance()->handle($_SERVER['REQUEST_URI']);
