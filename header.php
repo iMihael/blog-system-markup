@@ -3,10 +3,10 @@
 <head lang="en">
     <meta charset="UTF-8">
     <!--<link rel="stylesheet" href="css/bootstrap.min.css" />-->
-    <script type="text/javascript" src="js/jquery-2.2.2.min.js" ></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-simplex.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="text/javascript" src="/js/jquery-2.2.2.min.js" ></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-simplex.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
     <title>Blog</title>
 </head>
 <body>
@@ -70,8 +70,8 @@
                     <?php echo $_SESSION['firstName'] . " " . $_SESSION['lastName']; ?>
                     <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="blog.php?user-id=<?php echo $_SESSION['userId'] ?>">My Blog</a></li>
-                    <li><a href="add-post.php">Add post</a></li>
+                    <li><a href="/blog/index/<?php echo $_SESSION['userId'] ?>">My Blog</a></li>
+                    <li><a href="/blog/add">Add post</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="logout.php">Logout</a></li>
                 </ul>

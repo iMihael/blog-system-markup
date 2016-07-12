@@ -18,49 +18,70 @@ class Router {
 
     private function routes() {
         return [
-            '/site/register' => [
+            '/^\/$/' => [
+                'controller' => 'SiteController',
+                'action' => 'actionIndex'
+            ],
+            '/^\/site\/register$/' => [
                 'controller' => 'SiteController',
                 'action' => 'actionRegister'
             ],
-//            '/^\/user\/profile\/\d+$/' => [
-//                'controller' => 'UserController',
-//                'action' => 'actionProfile'
-//            ],
+            '/^\/site\/login$/' => [
+                'controller' => 'SiteController',
+                'action' => 'actionLogin'
+            ],
+            '/^\/user\/profile\/(\d+)$/' => [
+                'controller' => 'UserController',
+                'action' => 'actionProfile'
+            ],
+            '/^\/blog\/index\/(\d+)$/' => [
+                'controller' => 'BlogController',
+                'action' => 'actionIndex'
+            ],
+            '/^\/blog\/add$/' => [
+                'controller' => 'BlogController',
+                'action' => 'actionAdd',
+                'auth' => true,
+            ],
         ];
+    }
+
+    public static function redirect($url) {
+        header("Location: " . $url);
     }
 
     public function handle($route) {
         $routes = $this->routes();
-        if(array_key_exists($route, $routes)) {
-            $className = $routes[$route]['controller'];
-            $methodName = $routes[$route]['action'];
+        foreach(array_keys($routes) as $r) {
+            $matches = [];
+            if(preg_match($r, $route, $matches)) {
+                $className = $routes[$r]['controller'];
+                $methodName = $routes[$r]['action'];
 
-            $controller = new $className();
-            $controller->$methodName();
-        } else {
+                $controller = new $className();
+                $controller->$methodName($matches);
+                return;
+            }
+        }
 
-//            foreach($routes as $key => $value) {
-//                if(preg_match($key, $route)) {
-//                    $className = $routes[$key]['controller'];
-//                    $methodName = $routes[$key]['action'];
-//
-//                    $controller = new $className();
-//                    $controller->$methodName();
-//                    return;
-//                }
-//            }
 
-            $route = array_values(
-                array_filter(explode('/', $route))
-            );
+        $route = array_values(
+            array_filter(explode('/', $route))
+        );
+
+        if(count($route) == 2) {
             $className = ucfirst($route[0]) . 'Controller';
-            if(class_exists($className)) {
+            if (class_exists($className)) {
                 $controller = new $className;
                 $methodName = 'action' . ucfirst($route[1]);
-                if(method_exists($controller, $methodName)) {
+                if (method_exists($controller, $methodName)) {
                     $controller->$methodName();
+                    return;
                 }
             }
         }
+
+
+        throw new Exception("No route found.");
     }
 }
