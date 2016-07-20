@@ -2,6 +2,9 @@
 
 class SiteController {
     public function actionIndex() {
+
+        $my = new MySQLConnector();
+
         $users = UserModel::getUsers(5);
 
         require_once __DIR__ . DIRECTORY_SEPARATOR .
