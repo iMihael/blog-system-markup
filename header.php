@@ -62,8 +62,8 @@
             </form>
             <ul class="nav navbar-nav navbar-right">
                 <?php if(!isset($_SESSION['user'])) { ?>
-                <li><a href="login.php">Log in</a></li>
-                <li><a href="signup.php">Sign up</a></li>
+                <li><a href="/site/login">Log in</a></li>
+                <li><a href="/site/register">Sign up</a></li>
                 <?php } else { ?>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -73,7 +73,7 @@
                     <li><a href="/blog/index/<?php echo $_SESSION['userId'] ?>">My Blog</a></li>
                     <li><a href="/blog/add">Add post</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="logout.php">Logout</a></li>
+                    <li><a href="/site/logout">Logout</a></li>
                 </ul>
                 </li>
                 <?php } ?>

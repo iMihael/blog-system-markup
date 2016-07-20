@@ -7,6 +7,7 @@
  * @property string $firstName
  * @property string $lastName
  * @property string $password
+ * @property DateTime $createdAt
  */
 class UserModel {
     private $id;
@@ -14,21 +15,78 @@ class UserModel {
     private $firstName;
     private $lastName;
     private $password;
+    private $createdAt;
 
     const DB_FILENAME = 'users.db';
 
-    public function __construct($id, $email, $firstName, $lastName, $password) {
-        $this->id = $id;
+    public function __construct($id = null, $email = null, $firstName = null, $lastName = null, $password = null, $createdAt = null) {
+        $this->id = intval($id);
         $this->email = $email;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->password = $password;
+        if(is_string($createdAt)) {
+            $createdAt = new DateTime($createdAt);
+        }
+        if($createdAt instanceof DateTime) {
+            $this->createdAt = $createdAt;
+        }
     }
 
     public function save() {
+        if($this->id) {
+            $sql = 'UPDATE user SET email = :e, firstName = :fN, lastName = :lN, password = :pwd, createdAt = :createdAt';
+        } else {
+            $sql = 'INSERT INTO user (email, firstName, lastName, password, createdAt) VALUES (:e, :fN, :lN, :pwd, :createdAt)';
+            $this->createdAt = new DateTime();
+        }
 
+        $statement = MySQLConnector::getInstance()->getPDO()->prepare($sql);
+        $vars = [
+            ':e' => $this->email,
+            ':fN' => $this->firstName,
+            ':lN' => $this->lastName,
+            ':pwd' => sha1($this->password),
+            ':createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+        ];
+        if($statement->execute($vars)) {
+            if (!$this->id) {
+                $this->id = intval(MySQLConnector::getInstance()->getPDO()->lastInsertId());
+            }
+
+            return true;
+        } else {
+            var_dump($statement->errorInfo());
+        }
+
+        return false;
     }
 
+    public function load($array) {
+        foreach($array as $key => $value) {
+            if(property_exists($this, $key)) {
+                $this->$key = $array[$key];
+            }
+        }
+    }
+
+    public function validate() {
+        $required = [
+            'email',
+            'firstName',
+            'lastName',
+            'email',
+            'password'
+        ];
+
+        foreach($required as $key) {
+            if(!$this->$key) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public function __get($name) {
         if(property_exists($this, $name)) {
@@ -40,26 +98,19 @@ class UserModel {
 
     /**
      * @param $id
-     * @return UserModel array of user models
+     * @return UserModel user model
      */
     public static function getUserById($id) {
-        $usersDb = fopen("db/users.db", "r");
-        if(!$usersDb) {
-            return false;
-        } else {
-            while(!feof($usersDb)) {
-                if($line = fgets($usersDb)) {
-                    $user = json_decode($line, true);
-
-                    if($user['id'] == $id) {
-                        $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password']);
-                        return $user;
-                    }
-                }
-            }
+        $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user WHERE id = :id');
+        $statement->execute([
+            ':id' => $id,
+        ]);
+        if($user = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
+            return $user;
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -67,22 +118,19 @@ class UserModel {
      * @return UserModel[] array of user models
      */
     public static function getUsers($limit) {
-        $usersDb = fopen("db/users.db", "r");
-        if(!$usersDb) {
-            return false;
-        } else {
-            $i = 0;
-            $users = [];
-            while(!feof($usersDb) && $i < $limit) {
-                if($line = fgets($usersDb)) {
-                    $user = json_decode($line, true);
-                    $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password']);
-                    $users[] = $user;
-                }
-            }
-            fclose($usersDb);
-            return $users;
+        $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user LIMIT :limit');
+        $statement->execute([
+            ':limit' => $limit
+        ]);
+
+        $users = [];
+
+        while($user = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
+            $users[] = $user;
         }
+
+        return $users;
     }
 
     /**
@@ -92,28 +140,16 @@ class UserModel {
      */
     public static function checkUser($email, $password) {
         $password = sha1($password);
-        $usersDb = fopen("db/users.db", "r");
-        if(!$usersDb) {
-            return false;
-        } else {
-            while(!feof($usersDb)) {
-                $line = fgets($usersDb);
-                if($line) {
-                    $line = json_decode($line, true);
-                    if(
-                        $line["email"] == $email &&
-                        $line["password"] == $password
-                    ) {
-                        fclose($usersDb);
-
-                        $user = new UserModel($line['id'], $line['email'], $line['firstName'], $line['lastName'], $line['password']);
-                        return $user;
-                    }
-                }
-            }
-
-            fclose($usersDb);
-            return false;
+        $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user WHERE email = :email AND password = :pwd');
+        $statement->execute([
+            ':email' => $email,
+            ':pwd' => $password,
+        ]);
+        if($user = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
+            return $user;
         }
+
+        return null;
     }
 }

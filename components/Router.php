@@ -58,12 +58,16 @@ class Router {
                 $className = $routes[$r]['controller'];
                 $methodName = $routes[$r]['action'];
 
-                $controller = new $className();
-                $controller->$methodName($matches);
-                return;
+                if (class_exists($className)) {
+                    $controller = new $className();
+                    if (method_exists($controller, $methodName)) {
+                        $controller->$methodName($matches);
+                        return;
+                    }
+
+                }
             }
         }
-
 
         $route = array_values(
             array_filter(explode('/', $route))

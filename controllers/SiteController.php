@@ -3,8 +3,6 @@
 class SiteController {
     public function actionIndex() {
 
-        $my = new MySQLConnector();
-
         $users = UserModel::getUsers(5);
 
         require_once __DIR__ . DIRECTORY_SEPARATOR .
@@ -21,7 +19,7 @@ class SiteController {
                     $_SESSION['firstName'] = $user->firstName;
                     $_SESSION['lastName'] = $user->lastName;
                     $_SESSION['userId'] = $user->id;
-                    header("Location: /");
+                    Router::redirect('/');
                 }
             }
         } else {
@@ -30,5 +28,32 @@ class SiteController {
                 '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR
                 . 'site' . DIRECTORY_SEPARATOR . 'login.php';
         }
+    }
+
+    public function actionLogout() {
+        session_start();
+        session_destroy();
+        Router::redirect('/');
+    }
+
+    public function actionRegister() {
+        if (!empty($_POST)) {
+            $user = new UserModel();
+            $user->load($_POST);
+            if($user->validate()) {
+                if($user->save()) {
+                    $_SESSION['user'] = true;
+                    $_SESSION['firstName'] = $user->firstName;
+                    $_SESSION['lastName'] = $user->lastName;
+                    $_SESSION['userId'] = $user->id;
+                    Router::redirect('/');
+                }
+            }
+        }
+
+
+        require_once __DIR__ . DIRECTORY_SEPARATOR .
+            '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR
+            . 'site' . DIRECTORY_SEPARATOR . 'register.php';
     }
 }
