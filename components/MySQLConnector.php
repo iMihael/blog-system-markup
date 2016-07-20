@@ -9,7 +9,7 @@ class MySQLConnector {
 
     private $dbName = 'spalah_blog';
     private $username = 'root';
-    private $password = 'didiom17';
+    private $password = '';
     private $host = 'localhost';
 
     private $dbh;
