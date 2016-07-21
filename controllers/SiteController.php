@@ -3,6 +3,11 @@
 class SiteController {
     public function actionIndex() {
 
+
+        $user = new UserModel(null, 'mike@gmail.com', 'sadsad', 'dqwdqwdwq', '123', '1991-08-01');
+        $user->save();
+
+
         $users = UserModel::getUsers(5);
 
         require_once __DIR__ . DIRECTORY_SEPARATOR .

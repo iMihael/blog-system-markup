@@ -62,6 +62,21 @@ class UserModel {
         return false;
     }
 
+    public function delete() {
+        if($this->id) {
+            $sql = "DELETE FROM user WHERE (id = :id)";
+            $statement = MySQLConnector::getInstance()->getPDO()->prepare($sql);
+            if($statement->execute([
+                ':id' => $this->id,
+            ])) {
+                $this->id = null;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function load($array) {
         foreach($array as $key => $value) {
             if(property_exists($this, $key)) {
@@ -118,9 +133,10 @@ class UserModel {
      * @return UserModel[] array of user models
      */
     public static function getUsers($limit) {
-        $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user LIMIT :limit');
+        $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user WHERE LIMIT :limit');
         $statement->execute([
-            ':limit' => $limit
+            ':limit' => $limit,
+            //':active' => 1,
         ]);
 
         $users = [];

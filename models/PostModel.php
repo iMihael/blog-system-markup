@@ -9,6 +9,7 @@
  * @property string $createdAt
  */
 class PostModel {
+    private $id;
     private $title;
     private $body;
     private $image;
@@ -17,7 +18,8 @@ class PostModel {
 
     const PER_PAGE = 2;
 
-    public function __construct($title = null, $body = null, $image = null, $createdAt = null, $userId = null) {
+    public function __construct($id = null, $title = null, $body = null, $image = null, $createdAt = null, $userId = null) {
+        $this->id = $id;
         $this->title = $title;
         $this->body = $body;
         $this->image = $image;
@@ -109,8 +111,32 @@ class PostModel {
      * @return PostModel[]
      */
     public static function findPostsByUser($userId, $page = 1) {
-        $results = [];
+
+        //$sql = "SELECT * FROM post WHERE userId = :userId OFFSET :offset LIMIT :limit";
         $shift = ($page - 1) * self::PER_PAGE;
+        $sql = "SELECT * FROM post WHERE userId = :userId LIMIT :limit OFFSET :offset";
+        $statement = MySQLConnector::getInstance()->getPDO()->prepare($sql);
+        if($statement->execute([
+            ':userId' => $userId,
+            ':limit' => self::PER_PAGE,
+            ':offset' => $shift,
+        ])) {
+
+            $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $posts = [];
+            foreach($rows as $row) {
+                $post = new PostModel(
+                    $row['id'],
+                    $row['title'], $row['body'],
+                    $row['image'], $row['createdAt'], $row['userId']);
+                $posts[] = $post;
+            }
+        }
+
+        $results = [];
+
+
+
         if(file_exists("db/" . $userId . ".db")) {
             $posts = fopen("db/" . $userId . ".db", "r");
 
