@@ -1,5 +1,9 @@
 <?php
 
+
+namespace app\models;
+use app\components\MySQLConnector;
+
 /**
  * Class UserModel
  * @property int $id
@@ -7,9 +11,9 @@
  * @property string $firstName
  * @property string $lastName
  * @property string $password
- * @property DateTime $createdAt
+ * @property \DateTime $createdAt
  */
-class UserModel {
+class User {
     private $id;
     private $email;
     private $firstName;
@@ -26,9 +30,9 @@ class UserModel {
         $this->lastName = $lastName;
         $this->password = $password;
         if(is_string($createdAt)) {
-            $createdAt = new DateTime($createdAt);
+            $createdAt = new \DateTime($createdAt);
         }
-        if($createdAt instanceof DateTime) {
+        if($createdAt instanceof \DateTime) {
             $this->createdAt = $createdAt;
         }
     }
@@ -38,7 +42,7 @@ class UserModel {
             $sql = 'UPDATE user SET email = :e, firstName = :fN, lastName = :lN, password = :pwd, createdAt = :createdAt';
         } else {
             $sql = 'INSERT INTO user (email, firstName, lastName, password, createdAt) VALUES (:e, :fN, :lN, :pwd, :createdAt)';
-            $this->createdAt = new DateTime();
+            $this->createdAt = new \DateTime();
         }
 
         $statement = MySQLConnector::getInstance()->getPDO()->prepare($sql);
@@ -107,21 +111,21 @@ class UserModel {
         if(property_exists($this, $name)) {
             return $this->$name;
         } else {
-            throw new Exception("Unknown property");
+            throw new \Exception("Unknown property");
         }
     }
 
     /**
      * @param $id
-     * @return UserModel user model
+     * @return User user model
      */
     public static function getUserById($id) {
         $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user WHERE id = :id');
         $statement->execute([
             ':id' => $id,
         ]);
-        if($user = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
+        if($user = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $user = new User($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
             return $user;
         }
 
@@ -130,7 +134,7 @@ class UserModel {
 
     /**
      * @param int $limit amount of return objects
-     * @return UserModel[] array of user models
+     * @return User[] array of user models
      */
     public static function getUsers($limit) {
         $statement = MySQLConnector::getInstance()->getPDO()->prepare('SELECT * FROM user WHERE LIMIT :limit');
@@ -141,8 +145,8 @@ class UserModel {
 
         $users = [];
 
-        while($user = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
+        while($user = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $user = new User($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
             $users[] = $user;
         }
 
@@ -152,7 +156,7 @@ class UserModel {
     /**
      * @param $email
      * @param $password
-     * @return UserModel
+     * @return User
      */
     public static function checkUser($email, $password) {
         $password = sha1($password);
@@ -161,8 +165,8 @@ class UserModel {
             ':email' => $email,
             ':pwd' => $password,
         ]);
-        if($user = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $user = new UserModel($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
+        if($user = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $user = new User($user['id'], $user['email'], $user['firstName'], $user['lastName'], $user['password'], $user['createdAt']);
             return $user;
         }
 

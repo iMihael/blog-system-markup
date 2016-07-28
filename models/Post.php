@@ -1,5 +1,7 @@
 <?php
 
+namespace app\models;
+
 /**
  * Class PostModel
  *
@@ -8,7 +10,7 @@
  * @property string $image
  * @property string $createdAt
  */
-class PostModel {
+class Post {
     private $id;
     private $title;
     private $body;
@@ -55,7 +57,7 @@ class PostModel {
                     $pathInfo['extension'];
 
                 //TODO: implement imagick
-                $img = new Imagick($this->image['tmp_name']);
+                $img = new \Imagick($this->image['tmp_name']);
                 $img->thumbnailImage(100, 0);
                 $img->writeImage("img/thumb_" . $name);
 
@@ -101,14 +103,14 @@ class PostModel {
         if(property_exists($this, $name)) {
             return $this->$name;
         } else {
-            throw new Exception("Unknown property");
+            throw new \Exception("Unknown property");
         }
     }
 
     /**
      * @param $userId
      * @param int $page
-     * @return PostModel[]
+     * @return Post[]
      */
     public static function findPostsByUser($userId, $page = 1) {
 

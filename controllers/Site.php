@@ -1,25 +1,33 @@
 <?php
 
-class SiteController {
+
+namespace app\controllers;
+
+use app\components\Router;
+use app\components\Twig;
+use app\models\User;
+
+class Site {
     public function actionIndex() {
 
 
-        $user = new UserModel(null, 'mike@gmail.com', 'sadsad', 'dqwdqwdwq', '123', '1991-08-01');
+        $user = new User(null, 'mike@gmail.com', 'sadsad', 'dqwdqwdwq', '123', '1991-08-01');
         $user->save();
 
 
-        $users = UserModel::getUsers(5);
+        $users = User::getUsers(5);
 
-        require_once __DIR__ . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR
-            . 'site' . DIRECTORY_SEPARATOR . 'index.php';
+        echo Twig::getInstance()->render('site/index.twig', [
+            'isGuest' => !isset($_SESSION['user']),
+            'users' => $users
+        ]);
     }
 
     public function actionLogin() {
 
         if(!empty($_POST)) {
             if(isset($_POST['email']) && isset($_POST['password'])) {
-                if($user = UserModel::checkUser($_POST['email'], $_POST['password'])) {
+                if($user = User::checkUser($_POST['email'], $_POST['password'])) {
                     $_SESSION['user'] = true;
                     $_SESSION['firstName'] = $user->firstName;
                     $_SESSION['lastName'] = $user->lastName;
@@ -28,10 +36,7 @@ class SiteController {
                 }
             }
         } else {
-
-            require_once __DIR__ . DIRECTORY_SEPARATOR .
-                '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR
-                . 'site' . DIRECTORY_SEPARATOR . 'login.php';
+            echo Twig::getInstance()->render('site/login.twig');
         }
     }
 
@@ -43,7 +48,7 @@ class SiteController {
 
     public function actionRegister() {
         if (!empty($_POST)) {
-            $user = new UserModel();
+            $user = new User();
             $user->load($_POST);
             if($user->validate()) {
                 if($user->save()) {
@@ -57,8 +62,6 @@ class SiteController {
         }
 
 
-        require_once __DIR__ . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR
-            . 'site' . DIRECTORY_SEPARATOR . 'register.php';
+        echo Twig::getInstance()->render('site/register.twig');
     }
 }

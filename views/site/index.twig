@@ -1,0 +1,47 @@
+{% extends "layout.twig" %}
+
+
+{% block content %}
+<div class="container">
+
+
+    {% if isGuest() %}
+    <div class="jumbotron">
+        <h1>Introduce cool blog system!</h1>
+        <p>It's very cool and fun, try it!</p>
+        <p><a class="btn btn-primary" href="/site/register">Start using!</a> or <a href="/site/login" class="btn btn-primary">Log in</a></p>
+    </div>
+    {% endif %}
+
+
+    <h2>List of bloggers</h2>
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Количество записей</th>
+            <th>Количество фото</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for user in users %}
+        <tr>
+            <td>
+                <a href="blog.php?user-id={{ user.id }}">{{ user.firstName }} {{ user.lastName }}</a>
+            </td>
+            <td>
+                0
+            </td>
+            <td>
+                0
+            </td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

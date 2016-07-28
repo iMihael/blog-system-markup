@@ -1,0 +1,14 @@
+{
+    "name": "michael/blog",
+    "description": "spalah blog",
+    "authors": [
+        {
+            "name": "Michael Bolsunovskyi",
+            "email": "bitbucket@mihael.me"
+        }
+    ],
+    "require": {
+        "facebook/php-sdk-v4": "^5.2",
+        "twig/twig": "^1.24"
+    }
+}

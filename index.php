@@ -1,16 +1,18 @@
 <?php
 
+namespace app;
+
+require_once 'vendor/autoload.php';
+
+use app\components\Router;
+
 session_start();
 
 spl_autoload_register(function($className){
-    if(strpos($className, "Controller")) {
-        require_once 'controllers' . DIRECTORY_SEPARATOR . $className . '.php';
-    } else if(strpos($className, "Model")) {
-        require_once 'models' . DIRECTORY_SEPARATOR . $className . '.php';
-    } else {
-        require_once 'components' . DIRECTORY_SEPARATOR . $className . '.php';
-    }
+    $parts = explode("\\", $className);
+    array_shift($parts);
+    $path = implode(DIRECTORY_SEPARATOR, $parts);
+    require_once $path . '.php';
 });
-
 
 Router::getInstance()->handle($_SERVER['REQUEST_URI']);

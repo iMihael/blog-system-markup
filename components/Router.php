@@ -1,5 +1,7 @@
 <?php
 
+namespace app\components;
+
 class Router {
     private static $instance;
     private function __construct() {
@@ -19,27 +21,27 @@ class Router {
     private function routes() {
         return [
             '/^\/$/' => [
-                'controller' => 'SiteController',
+                'controller' => 'app\controllers\Site',
                 'action' => 'actionIndex'
             ],
             '/^\/site\/register$/' => [
-                'controller' => 'SiteController',
+                'controller' => 'app\controllers\Site',
                 'action' => 'actionRegister'
             ],
             '/^\/site\/login$/' => [
-                'controller' => 'SiteController',
+                'controller' => 'app\controllers\Site',
                 'action' => 'actionLogin'
             ],
             '/^\/user\/profile\/(\d+)$/' => [
-                'controller' => 'UserController',
+                'controller' => 'app\controllers\User',
                 'action' => 'actionProfile'
             ],
             '/^\/blog\/index\/(\d+)$/' => [
-                'controller' => 'BlogController',
+                'controller' => 'app\controllers\Blog',
                 'action' => 'actionIndex'
             ],
             '/^\/blog\/add$/' => [
-                'controller' => 'BlogController',
+                'controller' => 'app\controllers\Blog',
                 'action' => 'actionAdd',
                 'auth' => true,
             ],
@@ -86,6 +88,6 @@ class Router {
         }
 
 
-        throw new Exception("No route found.");
+        throw new \Exception("No route found.");
     }
 }

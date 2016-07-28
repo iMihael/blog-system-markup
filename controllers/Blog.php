@@ -1,11 +1,16 @@
 <?php
 
-class BlogController {
+namespace app\controllers;
+
+use app\components\Router;
+use app\models\Post;
+
+class Blog {
     public function actionIndex($params) {
 
         $id = $params[1];
 
-        $posts = PostModel::findPostsByUser($id);
+        $posts = Post::findPostsByUser($id);
 
         require_once __DIR__ . DIRECTORY_SEPARATOR .
             '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR
@@ -15,7 +20,7 @@ class BlogController {
     public function actionAdd() {
 
 
-        $post = new PostModel();
+        $post = new Post();
         $post->load($_POST, $_FILES);
 
 
